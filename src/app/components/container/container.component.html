@@ -1,0 +1,8 @@
+<section class="container">
+    <app-map
+        *ngIf="mapProperties"
+        [mapProperties]="mapProperties"
+        (notifyMapChange)="onChildMapChange($event)"
+    ></app-map>
+    <app-list *ngIf="parkList" [parkList]="parkList"></app-list>
+</section>
