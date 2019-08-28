@@ -1,4 +1,21 @@
 /* You can add global styles to this file, and also import other style files */
 * {
-  margin: 0;
+    margin: 0;
+}
+
+body {
+    height: 100vh;
+    width: 100vw;
+
+    app-list {
+        flex: 1;
+    }
+
+    app-map {
+        flex: 3;
+
+        section {
+            height: 100%;
+        }
+    }
 }
