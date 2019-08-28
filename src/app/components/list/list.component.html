@@ -1,7 +1,7 @@
 <section *ngIf="parkList" class="listContainer">
     <app-list-item
-        *ngFor="let list of parkList"
-        [list]="list"
-        [name]="list.result.name"
+        *ngFor="let listItem of parkList"
+        [listItem]="listItem"
+        [name]="listItem.result.name"
     ></app-list-item>
 </section>

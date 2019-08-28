@@ -1,17 +1,17 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { PlaceResult } from "src/app/models/googlePlaces.model";
+import { Component, Input } from "@angular/core";
+import { Park } from "src/app/models/parks.model";
 
 @Component({
     selector: "app-list-item",
     templateUrl: "./list-item.component.html",
     styleUrls: ["./list-item.component.scss"],
 })
-export class ListItemComponent implements OnInit {
-    @Input() list: PlaceResult;
+export class ListItemComponent {
+    @Input() listItem: Park;
     @Input() name: string;
     constructor() {}
 
-    ngOnInit() {
-        console.log(this.list);
+    public onClickItem(listItem: Park) {
+        google.maps.event.trigger(listItem.marker, "click");
     }
 }

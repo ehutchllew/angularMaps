@@ -31,7 +31,7 @@ export class GooglePlacesService {
             bounds: map.getBounds(),
             fields: ["geometry", "name"],
             location: map.getCenter(),
-            radius: 2500,
+            radius: 3500,
             type: "park",
         };
     }

@@ -51,13 +51,30 @@ export class ContainerComponent implements OnInit {
         );
     }
 
-    protected createSingleMarker(result: PlaceResult, map: Map) {
+    protected createSingleMarker(
+        result: PlaceResult,
+        map: Map,
+        infoWindow: google.maps.InfoWindow
+    ) {
         const marker: Marker = new google.maps.Marker({
             map,
             position: result.geometry.location,
         });
-
+        google.maps.event.addListener(marker, "mouseover", mouseoverCallback);
+        google.maps.event.addDomListener(marker, "click", clickCallback);
         return marker;
+
+        function clickCallback() {
+            const markerPosition = marker.getPosition();
+            map.panTo(markerPosition);
+            setTimeout(() => map.setCenter(markerPosition), 2000);
+            mouseoverCallback();
+        }
+
+        function mouseoverCallback() {
+            infoWindow.setContent(result.name);
+            infoWindow.open(map, this);
+        }
     }
 
     protected generateParks(
@@ -69,9 +86,9 @@ export class ContainerComponent implements OnInit {
         if (status !== google.maps.places.PlacesServiceStatus.OK) {
             return;
         }
-
+        const infoWindow = new google.maps.InfoWindow();
         const parksList = results.map(result => ({
-            marker: this.createSingleMarker(result, map),
+            marker: this.createSingleMarker(result, map, infoWindow),
             result,
         }));
 

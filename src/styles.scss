@@ -9,6 +9,12 @@ body {
 
     app-list {
         flex: 1;
+        overflow-y: scroll;
+        -ms-overflow-style: none;
+    }
+
+    app-list::-webkit-scrollbar {
+        width: 0;
     }
 
     app-map {
