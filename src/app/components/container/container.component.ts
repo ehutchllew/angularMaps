@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { Geolocation } from "src/app/models/geolocation.model";
+import { GooglePlacesService } from "src/app/services/google-places.service";
 
 @Component({
     selector: "app-container",
@@ -12,7 +13,7 @@ export class ContainerComponent implements OnInit {
         latitude: 36.847163,
         longitude: -76.2931849,
     };
-    constructor() {}
+    constructor(private googleService: GooglePlacesService) {}
 
     ngOnInit() {
         this.getGeolocation()
@@ -26,17 +27,13 @@ export class ContainerComponent implements OnInit {
                     zoom: 14,
                     mapTypeId: google.maps.MapTypeId.ROADMAP,
                 };
-
-                setTimeout(
-                    () =>
-                        (this.mapProperties = {
-                            ...this.mapProperties,
-                            zoom: 15,
-                        }),
-                    2000
-                );
             })
             .catch(e => console.warn(`Failed to fetch coordinates: ${e}`));
+    }
+
+    onChildMapChange(map: google.maps.Map) {
+        console.log(map);
+        this.googleService.getParksFromMap(map);
     }
 
     getGeolocation(): Promise<Geolocation> {

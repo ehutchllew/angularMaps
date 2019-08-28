@@ -1,4 +1,11 @@
-import { Component, Input, OnInit, ViewChild } from "@angular/core";
+import {
+    Component,
+    EventEmitter,
+    Input,
+    OnInit,
+    Output,
+    ViewChild,
+} from "@angular/core";
 import {} from "googlemaps";
 @Component({
     selector: "app-map",
@@ -6,9 +13,10 @@ import {} from "googlemaps";
     styleUrls: [],
 })
 export class MapComponent implements OnInit {
-    private _mapProperties: google.maps.MapOptions;
     @ViewChild("mapContainer", { static: true }) mapElement: any;
     map: google.maps.Map;
+    @Output() notifyMapChange = new EventEmitter();
+    private _mapProperties: google.maps.MapOptions;
     constructor() {}
 
     @Input() set mapProperties(mapProperties: google.maps.MapOptions) {
@@ -24,10 +32,10 @@ export class MapComponent implements OnInit {
     }
 
     protected generateMap(): void {
-        console.log(this.mapProperties);
         this.map = new google.maps.Map(
             this.mapElement.nativeElement,
             this.mapProperties
         );
+        this.notifyMapChange.emit(this.map);
     }
 }
