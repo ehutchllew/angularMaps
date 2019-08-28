@@ -7,6 +7,7 @@ import {
     ViewChild,
 } from "@angular/core";
 import {} from "googlemaps";
+import { Map, MapOptions } from "src/app/models/googlePlaces.model";
 @Component({
     selector: "app-map",
     templateUrl: "./map.component.html",
@@ -14,16 +15,16 @@ import {} from "googlemaps";
 })
 export class MapComponent implements OnInit {
     @ViewChild("mapContainer", { static: true }) mapElement: any;
-    map: google.maps.Map;
+    map: Map;
     @Output() notifyMapChange = new EventEmitter();
-    private _mapProperties: google.maps.MapOptions;
+    private _mapProperties: MapOptions;
     constructor() {}
 
-    @Input() set mapProperties(mapProperties: google.maps.MapOptions) {
+    @Input() set mapProperties(mapProperties: MapOptions) {
         this._mapProperties = mapProperties;
     }
 
-    get mapProperties(): google.maps.MapOptions {
+    get mapProperties(): MapOptions {
         return this._mapProperties;
     }
 

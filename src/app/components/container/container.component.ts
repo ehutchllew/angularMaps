@@ -1,6 +1,14 @@
 import { Component, OnInit } from "@angular/core";
 import { Geolocation } from "src/app/models/geolocation.model";
 import { GooglePlacesService } from "src/app/services/google-places.service";
+import {
+    Map,
+    MapOptions,
+    Marker,
+    PlaceResult,
+    PlacesServiceStatus,
+    PlacesSearchPagination,
+} from "src/app/models/googlePlaces.model";
 
 @Component({
     selector: "app-container",
@@ -8,7 +16,8 @@ import { GooglePlacesService } from "src/app/services/google-places.service";
     styleUrls: ["./container.component.scss"],
 })
 export class ContainerComponent implements OnInit {
-    public mapProperties: google.maps.MapOptions;
+    public mapProperties: MapOptions;
+    public parkList: PlaceResult[];
     private geolocation: Geolocation = {
         latitude: 36.847163,
         longitude: -76.2931849,
@@ -31,12 +40,42 @@ export class ContainerComponent implements OnInit {
             .catch(e => console.warn(`Failed to fetch coordinates: ${e}`));
     }
 
-    onChildMapChange(map: google.maps.Map) {
-        console.log(map);
-        this.googleService.getParksFromMap(map);
+    public onChildMapChange(map: Map) {
+        this.googleService.getParksFromMap(
+            map,
+            (results, status, pagination) => {
+                this.parkList = results;
+                this.generateMarkers(results, status, pagination, map);
+            }
+        );
     }
 
-    getGeolocation(): Promise<Geolocation> {
+    protected createSingleMarker(result: PlaceResult, map: Map) {
+        const marker: Marker = new google.maps.Marker({
+            map,
+            position: result.geometry.location,
+        });
+
+        return marker;
+    }
+
+    protected generateMarkers(
+        results: PlaceResult[],
+        status: PlacesServiceStatus,
+        pagination: PlacesSearchPagination,
+        map: google.maps.Map
+    ) {
+        if (status !== google.maps.places.PlacesServiceStatus.OK) {
+            return;
+        }
+
+        const parksList = results.map(result => ({
+            result,
+            marker: this.createSingleMarker(result, map),
+        }));
+    }
+
+    protected getGeolocation(): Promise<Geolocation> {
         return new Promise(resolve => {
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition(

@@ -1,1 +1,7 @@
-<p>list works!</p>
+<section *ngIf="parkList" class="listContainer">
+    <ul>
+        <li *ngFor="let list of parkList">
+            {{ list.name }}
+        </li>
+    </ul>
+</section>
