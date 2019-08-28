@@ -1,7 +1,7 @@
 <section *ngIf="parkList" class="listContainer">
-    <ul>
-        <li *ngFor="let list of parkList">
-            {{ list.name }}
-        </li>
-    </ul>
+    <app-list-item
+        *ngFor="let list of parkList"
+        [list]="list"
+        [name]="list.result.name"
+    ></app-list-item>
 </section>

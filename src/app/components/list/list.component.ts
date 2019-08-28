@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { PlaceResult } from "src/app/models/googlePlaces.model";
+import { Park } from "src/app/models/parks.model";
 
 @Component({
     selector: "app-list",
@@ -7,10 +8,10 @@ import { PlaceResult } from "src/app/models/googlePlaces.model";
     styleUrls: ["./list.component.scss"],
 })
 export class ListComponent implements OnInit {
-    private _parkList: PlaceResult[];
+    private _parkList: Park[];
     constructor() {}
 
-    @Input() set parkList(parkList: PlaceResult[]) {
+    @Input() set parkList(parkList: Park[]) {
         this._parkList = parkList;
     }
 

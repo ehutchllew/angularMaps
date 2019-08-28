@@ -9,6 +9,7 @@ import {
     PlacesServiceStatus,
     PlacesSearchPagination,
 } from "src/app/models/googlePlaces.model";
+import { Park } from "src/app/models/parks.model";
 
 @Component({
     selector: "app-container",
@@ -17,7 +18,7 @@ import {
 })
 export class ContainerComponent implements OnInit {
     public mapProperties: MapOptions;
-    public parkList: PlaceResult[];
+    public parkList: Park[];
     private geolocation: Geolocation = {
         latitude: 36.847163,
         longitude: -76.2931849,
@@ -44,8 +45,8 @@ export class ContainerComponent implements OnInit {
         this.googleService.getParksFromMap(
             map,
             (results, status, pagination) => {
-                this.parkList = results;
-                this.generateMarkers(results, status, pagination, map);
+                // this.parkList = results;
+                this.generateParks(results, status, pagination, map);
             }
         );
     }
@@ -59,7 +60,7 @@ export class ContainerComponent implements OnInit {
         return marker;
     }
 
-    protected generateMarkers(
+    protected generateParks(
         results: PlaceResult[],
         status: PlacesServiceStatus,
         pagination: PlacesSearchPagination,
@@ -70,9 +71,11 @@ export class ContainerComponent implements OnInit {
         }
 
         const parksList = results.map(result => ({
-            result,
             marker: this.createSingleMarker(result, map),
+            result,
         }));
+
+        this.parkList = parksList;
     }
 
     protected getGeolocation(): Promise<Geolocation> {
