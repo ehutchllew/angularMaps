@@ -1,4 +1,6 @@
+export type Animation = google.maps.Animation;
 export type LatLng = google.maps.LatLng;
+export type InfoWindow = google.maps.InfoWindow;
 export type Map = google.maps.Map;
 export type MapOptions = google.maps.MapOptions;
 export type Marker = google.maps.Marker;
