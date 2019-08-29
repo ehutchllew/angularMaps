@@ -45,7 +45,6 @@ export class ContainerComponent implements OnInit {
         this.googleService.getParksFromMap(
             map,
             (results, status, pagination) => {
-                // this.parkList = results;
                 this.generateParks(results, status, pagination, map);
             }
         );
@@ -66,6 +65,7 @@ export class ContainerComponent implements OnInit {
 
         function clickCallback() {
             const markerPosition = marker.getPosition();
+            console.log("CLICKED MARKER: \n", marker);
             map.panTo(markerPosition);
             setTimeout(() => map.setCenter(markerPosition), 2000);
             mouseoverCallback();

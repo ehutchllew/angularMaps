@@ -7,8 +7,16 @@ body {
     height: 100vh;
     width: 100vw;
 
+    h1,
+    h2,
+    h3,
+    p {
+        font-family: Roboto;
+    }
+
     app-list {
         flex: 1;
+        min-width: 30vw;
         overflow-y: scroll;
         -ms-overflow-style: none;
     }

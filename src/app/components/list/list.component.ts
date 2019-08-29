@@ -1,5 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { PlaceResult } from "src/app/models/googlePlaces.model";
+import { Component, Input } from "@angular/core";
 import { Park } from "src/app/models/parks.model";
 
 @Component({
@@ -7,7 +6,7 @@ import { Park } from "src/app/models/parks.model";
     templateUrl: "./list.component.html",
     styleUrls: ["./list.component.scss"],
 })
-export class ListComponent implements OnInit {
+export class ListComponent {
     private _parkList: Park[];
     constructor() {}
 
@@ -17,9 +16,5 @@ export class ListComponent implements OnInit {
 
     get parkList() {
         return this._parkList;
-    }
-
-    ngOnInit() {
-        console.log(this.parkList);
     }
 }

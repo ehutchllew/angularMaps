@@ -1,5 +1,15 @@
 <button class="listItem" (click)="onClickItem(listItem)">
-    <h3>
-        {{ name }}
-    </h3>
+    <section class="info">
+        <p class="title">
+            {{ name }}
+        </p>
+        <p *ngIf="listItem.result.rating" class="lightFont">
+            Rating: <span class="rating">{{ listItem.result.rating }}</span>
+        </p>
+        <p class="lightFont">{{ listItem.result.types[0] }}</p>
+        <p class="lightFont">{{ listItem.result.vicinity }}</p>
+    </section>
+    <section class="photo">
+        <img class="itemImage" [src]="photo" [alt]="name" />
+    </section>
 </button>
