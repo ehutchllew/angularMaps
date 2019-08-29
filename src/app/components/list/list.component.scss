@@ -1,0 +1,17 @@
+@import "~src/config";
+
+.listContainer {
+    display: flex;
+    flex-direction: column;
+
+    & .header {
+        padding: 8px 16px;
+        width: 100%;
+
+        & p {
+            color: $orange;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+    }
+}

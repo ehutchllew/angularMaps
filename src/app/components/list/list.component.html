@@ -1,4 +1,10 @@
-<section *ngIf="parkList" class="listContainer">
+<section class="listContainer">
+    <section class="header">
+        <p>
+            {{ parkList.length }} Park{{ parkList.length === 1 ? "" : "s" }}
+            Found
+        </p>
+    </section>
     <app-list-item
         *ngFor="let listItem of parkList"
         [listItem]="listItem"

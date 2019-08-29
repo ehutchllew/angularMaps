@@ -11,7 +11,7 @@ export class ListComponent {
     constructor() {}
 
     @Input() set parkList(parkList: Park[]) {
-        this._parkList = parkList;
+        this._parkList = parkList || [];
     }
 
     get parkList() {
