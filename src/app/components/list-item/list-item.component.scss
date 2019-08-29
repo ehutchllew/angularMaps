@@ -1,6 +1,4 @@
-$dark-grey: #333;
-$light-grey: #999;
-$orange: #e7711b;
+@import "~src/config";
 
 .listItem {
     background-color: white;
@@ -8,7 +6,7 @@ $orange: #e7711b;
     border-bottom: 1px solid lighten($light-grey, 35%);
     cursor: pointer;
     display: flex;
-    padding: 10px 5px;
+    padding: 8px 16px;
     text-align: left;
     width: 100%;
 
