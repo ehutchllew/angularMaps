@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { Geolocation } from "src/app/models/geolocation.model";
 import { GooglePlacesService } from "src/app/services/google-places.service";
 import {
+    InfoWindow,
     Map,
     MapOptions,
     Marker,
@@ -17,13 +18,17 @@ import { Park } from "src/app/models/parks.model";
     styleUrls: ["./container.component.scss"],
 })
 export class ContainerComponent implements OnInit {
+    public infoWindow: InfoWindow;
+    public map: Map;
     public mapProperties: MapOptions;
-    public parkList: Park[];
+    public parkList: Park[] = [];
     private geolocation: Geolocation = {
         latitude: 36.847163,
         longitude: -76.2931849,
     };
-    constructor(private googleService: GooglePlacesService) {}
+    constructor(private googleService: GooglePlacesService) {
+        this.infoWindow = new google.maps.InfoWindow();
+    }
 
     ngOnInit() {
         this.getGeolocation()
@@ -42,38 +47,29 @@ export class ContainerComponent implements OnInit {
     }
 
     public onChildMapChange(map: Map) {
-        this.googleService.getParksFromMap(
-            map,
-            (results, status, pagination) => {
-                this.generateParks(results, status, pagination, map);
-            }
-        );
+        map.addListener("idle", () => this.getParksFromMap(map));
     }
 
-    protected createSingleMarker(
-        result: PlaceResult,
-        map: Map,
-        infoWindow: google.maps.InfoWindow
-    ) {
+    protected createSingleMarker(result: PlaceResult, map: Map) {
         const marker: Marker = new google.maps.Marker({
             map,
             position: result.geometry.location,
         });
-        google.maps.event.addListener(marker, "mouseover", mouseoverCallback);
         google.maps.event.addDomListener(marker, "click", clickCallback);
+        google.maps.event.addListener(marker, "mouseover", mouseoverCallback);
         return marker;
 
         function clickCallback() {
             const markerPosition = marker.getPosition();
-            console.log("CLICKED MARKER: \n", marker);
             map.panTo(markerPosition);
-            setTimeout(() => map.setCenter(markerPosition), 2000);
-            mouseoverCallback();
+            mouseoverCallback.call(this);
+            marker.setAnimation(google.maps.Animation.BOUNCE);
+            setTimeout(() => marker.setAnimation(null), 2000);
         }
 
         function mouseoverCallback() {
-            infoWindow.setContent(result.name);
-            infoWindow.open(map, this);
+            this.infoWindow.setContent(result.name);
+            this.infoWindow.open(map, this);
         }
     }
 
@@ -83,16 +79,21 @@ export class ContainerComponent implements OnInit {
         pagination: PlacesSearchPagination,
         map: google.maps.Map
     ) {
+        const currentParkMarkers = this.parkList.map(park => park.marker);
         if (status !== google.maps.places.PlacesServiceStatus.OK) {
             return;
         }
-        const infoWindow = new google.maps.InfoWindow();
-        const parksList = results.map(result => ({
-            marker: this.createSingleMarker(result, map, infoWindow),
+        const newParksList = results.map(result => ({
+            marker: this.createSingleMarker(result, map),
             result,
         }));
 
-        this.parkList = parksList;
+        this.mergeParkMarkers(
+            currentParkMarkers,
+            newParksList.map(park => park.marker)
+        );
+
+        this.parkList = newParksList;
     }
 
     protected getGeolocation(): Promise<Geolocation> {
@@ -107,5 +108,23 @@ export class ContainerComponent implements OnInit {
                 resolve(this.geolocation);
             }
         });
+    }
+
+    protected getParksFromMap(map) {
+        this.googleService.getParksFromMap(
+            map,
+            (results, status, pagination) => {
+                this.generateParks(results, status, pagination, map);
+            }
+        );
+    }
+
+    protected mergeParkMarkers(currentMarkers, newMarkers) {
+        setTimeout(() => {
+            for (const marker of currentMarkers) {
+                marker.setMap(null);
+            }
+            currentMarkers = [...newMarkers];
+        }, 0);
     }
 }
