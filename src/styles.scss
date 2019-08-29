@@ -16,9 +16,13 @@ body {
 
     app-list {
         flex: 2;
-        min-width: 30vw;
+        min-width: 15vw;
         overflow-y: scroll;
         -ms-overflow-style: none;
+
+        @media screen and (min-width: 1200px) {
+            flex: 1;
+        }
     }
 
     app-list::-webkit-scrollbar {
