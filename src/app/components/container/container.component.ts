@@ -9,6 +9,7 @@ import {
     PlacesServiceStatus,
     PlacesSearchPagination,
 } from "src/app/models/googlePlaces.model";
+import { Park } from "src/app/models/parks.model";
 
 @Component({
     selector: "app-container",
@@ -17,7 +18,7 @@ import {
 })
 export class ContainerComponent implements OnInit {
     public mapProperties: MapOptions;
-    public parkList: PlaceResult[];
+    public parkList: Park[];
     private geolocation: Geolocation = {
         latitude: 36.847163,
         longitude: -76.2931849,
@@ -44,22 +45,39 @@ export class ContainerComponent implements OnInit {
         this.googleService.getParksFromMap(
             map,
             (results, status, pagination) => {
-                this.parkList = results;
-                this.generateMarkers(results, status, pagination, map);
+                this.generateParks(results, status, pagination, map);
             }
         );
     }
 
-    protected createSingleMarker(result: PlaceResult, map: Map) {
+    protected createSingleMarker(
+        result: PlaceResult,
+        map: Map,
+        infoWindow: google.maps.InfoWindow
+    ) {
         const marker: Marker = new google.maps.Marker({
             map,
             position: result.geometry.location,
         });
-
+        google.maps.event.addListener(marker, "mouseover", mouseoverCallback);
+        google.maps.event.addDomListener(marker, "click", clickCallback);
         return marker;
+
+        function clickCallback() {
+            const markerPosition = marker.getPosition();
+            console.log("CLICKED MARKER: \n", marker);
+            map.panTo(markerPosition);
+            setTimeout(() => map.setCenter(markerPosition), 2000);
+            mouseoverCallback();
+        }
+
+        function mouseoverCallback() {
+            infoWindow.setContent(result.name);
+            infoWindow.open(map, this);
+        }
     }
 
-    protected generateMarkers(
+    protected generateParks(
         results: PlaceResult[],
         status: PlacesServiceStatus,
         pagination: PlacesSearchPagination,
@@ -68,11 +86,13 @@ export class ContainerComponent implements OnInit {
         if (status !== google.maps.places.PlacesServiceStatus.OK) {
             return;
         }
-
+        const infoWindow = new google.maps.InfoWindow();
         const parksList = results.map(result => ({
+            marker: this.createSingleMarker(result, map, infoWindow),
             result,
-            marker: this.createSingleMarker(result, map),
         }));
+
+        this.parkList = parksList;
     }
 
     protected getGeolocation(): Promise<Geolocation> {

@@ -29,9 +29,15 @@ export class GooglePlacesService {
     protected generatePlacesRequest(map: google.maps.Map) {
         return {
             bounds: map.getBounds(),
-            fields: ["geometry", "name"],
+            fields: [
+                "formatted_address",
+                "geometry",
+                "name",
+                "photos[]",
+                "rating",
+            ],
             location: map.getCenter(),
-            radius: 2500,
+            radius: 3500,
             type: "park",
         };
     }
